@@ -17,26 +17,7 @@ GOBUILD=CGO_ENABLED=0 go build -tags with_gvisor -trimpath -ldflags '-X "github.
 		-w -s -buildid='
 
 PLATFORM_LIST = \
-	darwin-amd64 \
-	darwin-arm64 \
-	linux-amd64-compatible \
-	linux-amd64 \
-	linux-armv5 \
-	linux-armv6 \
-	linux-armv7 \
-	linux-arm64 \
-	linux-mips64 \
-	linux-mips64le \
-	linux-mips-softfloat \
-	linux-mips-hardfloat \
-	linux-mipsle-softfloat \
-	linux-mipsle-hardfloat \
-	linux-riscv64 \
-	linux-loong64 \
-	android-arm64 \
-	freebsd-386 \
-	freebsd-amd64 \
-	freebsd-arm64
+	darwin-amd64 
 
 WINDOWS_ARCH_LIST = \
 	windows-386 \
@@ -141,14 +122,14 @@ zip_releases=$(addsuffix .zip, $(WINDOWS_ARCH_LIST))
 
 $(gz_releases): %.gz : %
 	chmod +x $(BINDIR)/$(NAME)-$(basename $@)
-	gzip -f -S -$(VERSION).gz $(BINDIR)/$(NAME)-$(basename $@)
+	tar -zcvf $(BINDIR)/$(NAME)-$(basename $@).tar.gz $(BINDIR)/$(NAME)-$(basename $@)
 
 $(zip_releases): %.zip : %
 	zip -m -j $(BINDIR)/$(NAME)-$(basename $@)-$(VERSION).zip $(BINDIR)/$(NAME)-$(basename $@).exe
 
 all-arch: $(PLATFORM_LIST) $(WINDOWS_ARCH_LIST)
 
-releases: $(gz_releases) $(zip_releases)
+releases: $(gz_releases) 
 
 vet:
 	go test ./...
